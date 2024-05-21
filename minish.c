@@ -16,7 +16,13 @@ void manejar_interrupcion(int sig) {
     // Limpiar la salida estándar
     fflush(stdout);
 }
+
 int main() {
+    char input[MAX_INPUT_LENGTH];
+    char *argv[MAX_ARGC];
+    int argc;
+    int ultimo_estado = 0;
+
     // Configurar el manejador de señal para SIGINT
     struct sigaction sa;
     sa.sa_handler = manejar_interrupcion; // Establecer la función de manejo de señales
@@ -24,24 +30,48 @@ int main() {
     sa.sa_flags = SA_RESTART; // Establecer la bandera SA_RESTART para reiniciar llamadas interrumpidas
     sigaction(SIGINT, &sa, NULL); // Registrar el manejador de señal
 
-    // Resto del código del shell...
-    
-    return 0;
-}
-   // Bucle infinito para mantener el programa en ejecución continuamente
-while (1) {
-    // Obtener el nombre de usuario y el directorio actual
-    char *username = getenv("USER"); // Obtener el nombre de usuario actual
-    char cwd[1024]; // Crear un buffer para almacenar el directorio actual
+    // Bucle infinito para mantener el programa en ejecución continuamente
+    while (1) {
+        // Obtener el nombre de usuario y el directorio actual
+        char *nombre_de_usuario = getenv("USER"); // Obtener el nombre de usuario actual
+        char cwd[1024]; // Crear un buffer para almacenar el directorio actual
 
-    // Verificar si se pudo obtener el directorio actual correctamente
-    if (getcwd(cwd, sizeof(cwd)) == NULL) {
-        // Si hubo un error al obtener el directorio actual, imprimir un mensaje de error y salir del programa
-        perror("getcwd"); // Imprimir un mensaje de error describiendo el problema
-        exit(EXIT_FAILURE); // Terminar el programa con un código de error
+        // Verificar si se pudo obtener el directorio actual correctamente
+        if (getcwd(cwd, sizeof(cwd)) == NULL) {
+            // Si hubo un error al obtener el directorio actual, imprimir un mensaje de error y salir del programa
+            perror("getcwd"); // Imprimir un mensaje de error describiendo el problema
+            exit(EXIT_FAILURE); // Terminar el programa con un código de error
+        }
+
+        // Escribir el prompt string en stderr
+        fprintf(stderr, "(minish) %s:%s > ", nombre_de_usuario, cwd);
+
+        // Leer una línea de entrada
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            if (feof(stdin)) {
+                break; // Salir del bucle si se encuentra EOF
+            } else {
+                perror("fgets");
+                continue;
+            }
+        }
+
+        // Separar la línea en palabras
+        argc = linea2argv(input, MAX_ARGC, argv);
+
+        if (argc < 0) {
+            fprintf(stderr, "Error: Demasiados argumentos\n");
+            continue;
+        }
+
+        // Invocar la función ejecutar
+        ultimo_estado = ejecutar(argc, argv);
+
+        // Limpiar la memoria asignada por linea2argv
+        for (int i = 0; i < argc; i++) {
+            free(argv[i]);
+        }
     }
 
-    // En este punto, `username` contiene el nombre de usuario actual y `cwd` contiene el directorio actual
-
-    // Resto del código para procesar el directorio actual y el nombre de usuario...
+    return ultimo_estado;
 }

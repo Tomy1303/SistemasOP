@@ -10,7 +10,7 @@
                     break;
                 }
         else{
-            argv[i] = linea[i]
+            argv[i] = (char *)malloc(&linea + 1)
             cantpalabras = i
         }
     return cantpalabras;
