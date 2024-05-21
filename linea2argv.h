@@ -1,0 +1,1 @@
+int linea2argv (char *linea, int argc, char **argv);

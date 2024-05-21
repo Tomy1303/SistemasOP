@@ -1,18 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
- int linea2argv (char *linea, int argc, char **argv){
-    int cantpalabras;
-    for (int i = 0; linea[i] != '\0'; i++) {
-        if (linea[i] == ' ' || linea[i] == '\t' || linea[i] == '\n') {
-            argv[i] = 0
-        }
-        if (count >= argc - 1) {
-                    break;
-                }
-        else{
-            argv[i] = (char *)malloc(&linea + 1)
-            cantpalabras = i
-        }
+int linea2argv(char *linea, int argc, char **argv) {
+    int cantpalabras = 0;
+    char *token = strtok(linea, " \t\n"); // Divide la línea en palabras
+
+    while (token != NULL && cantpalabras < argc) {
+        argv[cantpalabras] = strdup(token); // Asigna memoria para la palabra
+        cantpalabras++;
+        token = strtok(NULL, " \t\n"); // Siguiente palabra
+    }
+
     return cantpalabras;
 }
+
+
 

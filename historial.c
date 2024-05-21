@@ -8,7 +8,7 @@ typedef struct nodo_historial{
 
 nodo_historial *head = NULL;
 int counter = 0;
-int size 10;
+int size = 10;
 
 void agregar_historial(const char *cmd){
     nodo_historial *nodo = (nodo_historial *)malloc(sizeof(nodo_historial));

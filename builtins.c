@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 struct builtin_struct {
     char *cmd; // nombre del comando interno
@@ -9,8 +11,12 @@ struct builtin_struct {
 extern struct builtin_struct builtin_arr[];
 extern struct builtin_struct *builtin_lookup(char *cmd);
 
+int execute_exit(int argc, char **argv){
+    exit(0);
+}
+
 struct builtin_struct builtin_arr[] = {
-    //{"exit", execute_exit, "Termina el shell. Admite un parámetro que es el estado de retorno. Sin parámetro, usa el estado de retorno del último comando ejecutado."},
+    {"exit", execute_exit, "Termina el shell. Admite un parámetro que es el estado de retorno. Sin parámetro, usa el estado de retorno del último comando ejecutado."},
     //{"pid", execute_pid, "Muestra el ID del proceso del shell."},
     //{"uid", execute_uid, "Muestra el ID de usuario como número y el nombre de usuario."},
     //{"gid", execute_gid, "Muestra el grupo principal y los grupos secundarios del usuario."},
@@ -25,7 +31,7 @@ struct builtin_struct builtin_arr[] = {
     {NULL, NULL, NULL} // Marca de final de array
 };
 
-struct builtin_struct *buscar(char *cmd) {//buscar si existe el comando 
+struct builtin_struct *builtin_lookup(char *cmd) {//buscar si existe el comando 
     struct builtin_struct *comando = builtin_arr;
     while (comando->cmd != NULL) {
         if (strcmp(comando->cmd, cmd) == 0) {//comparacion de comandos
@@ -35,6 +41,21 @@ struct builtin_struct *buscar(char *cmd) {//buscar si existe el comando
     }
     return NULL; // comando no encontrado
 };
+
+int ejecutar(int argc, char **argv) {
+    struct builtin_struct *result = builtin_lookup(argv[0]);
+    if (result != NULL) {
+        result->func(argc, argv);
+    }
+    // Agrega un manejo para el caso en que el comando no se encuentra
+    else {
+        printf("Comando no encontrado: %s\n", argv[0]);
+    }
+    return 0; // Otra opción es devolver el estado de retorno de la función ejecutada
+}
+
+
+
 
 
 
