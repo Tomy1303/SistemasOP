@@ -60,7 +60,6 @@ int main() {
         // Separar la línea en palabras
         
         argc = linea2argv(input, MAX_ARGC, argv);
-        printf("%d\n", argc);
 
         if (argc < 0) {
             fprintf(stderr, "Error: Demasiados argumentos\n");
