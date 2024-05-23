@@ -17,12 +17,11 @@ void manejar_interrupcion(int sig) {
     // Limpiar la salida estándar
     fflush(stdout);
 }
-
+int ultimo_estado = 0;
 int main() {
     char input[MAX_INPUT_LENGTH];
     char *argv[MAX_ARGC];
     int argc;
-    int ultimo_estado = 0;
 
     // Configurar el manejador de señal para SIGINT
    // struct sigaction sa;

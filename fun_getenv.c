@@ -10,6 +10,7 @@ int execute_getenv(int argc, char **argv){
             printf("El valor de la variable %s es %s \n", var, getenv(var));
         }else{
             printf("La variable %s no está definida.\n", var);
+            return 1;
         }
     }
     return 0;

@@ -10,6 +10,9 @@
 #include "fun_uid.h"
 #include "fun_getenv.h"
 #include "fun_setenv.h"
+#include "fun_unsetenv.h"
+#include "fun_gid.h"
+#include "fun_status.h"
 
 extern struct builtin_struct builtin_arr[];
 extern struct builtin_struct *builtin_lookup(char *cmd);
@@ -18,12 +21,12 @@ struct builtin_struct builtin_arr[] = {
     {"exit", execute_exit, "Termina el shell. Admite un parámetro que es el estado de retorno. Sin parámetro, usa el estado de retorno del último comando ejecutado. \n"},
     {"pid", execute_pid, "Muestra el ID del proceso del shell. \n"},
     {"uid", execute_uid, "Muestra el ID de usuario como número y el nombre de usuario. \n"},
-    //{"gid", execute_gid, "Muestra el grupo principal y los grupos secundarios del usuario. \n"},
+    {"gid", execute_gid, "Muestra el grupo principal y los grupos secundarios del usuario. \n"},
     {"getenv", execute_getenv, "Muestra el valor de la(s) variable(s) de entorno especificada(s). Los parámetros son las variables de entorno para las cuales se quiere saber el valor. \n"},
     {"setenv", execute_setenv, "Define una nueva variable de entorno o cambia el valor de una variable de entorno existente. \n"},
-    //{"unsetenv", execute_unsetenv, "Elimina variables de entorno. \n"},
+    {"unsetenv", execute_unsetenv, "Elimina variables de entorno. \n"},
     //{"cd", execute_cd, "Cambia el directorio actual. Admite un parámetro. Además, setea la variable de entorno PWD con el pathname absoluto del directorio actual. El valor del parámetro puede ser: 'cd xxx' (cambia al directorio xxx), 'cd -' (cambia al directorio anterior), 'cd' (cambia al directorio especificado en la variable de entorno HOME). \n"},
-    //{"status", execute_status, "Muestra el estado de retorno del último comando ejecutado. \n"},
+    {"status", execute_status, "Muestra el estado de retorno del último comando ejecutado. \n"},
     {"help", execute_help, "Muestra una ayuda más extensa para el comando especificado. Sin argumentos, muestra un texto de ayuda indicando qué comandos internos existen. \n"},
     //{"dir", execute_dir, "Simula una ejecución simplificada del comando ls -l. Sin argumentos, muestra la lista de archivos del directorio actual. Con un único argumento, muestra la lista de archivos en el directorio especificado o que contengan el texto especificado en su nombre. \n"},
     //{"history", execute_history, "Muestra los N comandos anteriores (por defecto 10) que deben almacenarse para ejecuciones posteriores del shell, en el archivo $HOME/.minish_history. \n"},
@@ -43,14 +46,16 @@ struct builtin_struct *builtin_lookup(char *cmd) {//buscar si existe el comando
 
 int ejecutar(int argc, char **argv) {
     struct builtin_struct *result = builtin_lookup(argv[0]);
+    int status = 0;
     if (result != NULL) {
-        result->func(argc, argv);
+        status = result->func(argc, argv);
+        return status;  // Devuelve el estado de retorno de la función ejecutada
     }
     // Agrega un manejo para el caso en que el comando no se encuentra
     else {
         printf("Comando no encontrado: %s\n", argv[0]);
+        return 1;
     }
-    return 0; // Otra opción es devolver el estado de retorno de la función ejecutada
 }
 
 

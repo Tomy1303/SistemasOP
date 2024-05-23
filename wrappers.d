@@ -1,1 +1,0 @@
-wrappers.o: wrappers.c

@@ -1,1 +1,0 @@
-historial.o: historial.c

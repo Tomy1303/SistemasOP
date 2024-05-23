@@ -7,6 +7,7 @@ int execute_setenv(int argc, char **argv){
         printf("Variable de entorno %s establecida con valor %s\n", argv[1], argv[2]);
     } else {
         perror("Error al establecer la variable de entorno");
+        return 1;
     }
 
     return 0;

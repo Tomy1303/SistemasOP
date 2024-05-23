@@ -2,5 +2,9 @@
 #include "fun_exit.h"
 
 int execute_exit(int argc, char **argv){
-    exit(0);
+    if(argc == 1){
+        exit(0);
+    }else{
+        exit(argv[1]);
+    }
 }

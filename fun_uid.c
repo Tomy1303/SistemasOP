@@ -11,6 +11,7 @@ int execute_uid(int argc, char **argv){
         printf("Nombre de usuario: %s\n", user_entry->pw_name);
     } else {
         printf("No se pudo obtener el nombre de usuario.\n");
+        return 1;
     }
     return 0;
 }
