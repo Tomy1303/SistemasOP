@@ -5,3 +5,5 @@ struct builtin_struct {
     int (*func) (int, char **); // la función que lo ejecuta
     char *help_txt; // el texto de ayuda
 };
+
+struct builtin_struct *builtin_lookup(char *cmd);

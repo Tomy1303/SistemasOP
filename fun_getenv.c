@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "fun_getenv.h"
 
 int execute_getenv(int argc, char **argv){
