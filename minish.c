@@ -24,7 +24,7 @@ int main() {
     int argc;
 
     // Configurar el manejador de señal para SIGINT
-   // struct sigaction sa;
+    //struct sigaction sa;
     //sa.sa_handler = manejar_interrupcion; // Establecer la función de manejo de señales
     //sigemptyset(&sa.sa_mask); // Limpiar el conjunto de señales bloqueadas
     //sa.sa_flags = SA_RESTART; // Establecer la bandera SA_RESTART para reiniciar llamadas interrumpidas
@@ -64,6 +64,8 @@ int main() {
             fprintf(stderr, "Error: Demasiados argumentos\n");
             continue;
         }
+
+        argv[argc] = NULL;
 
         // Invocar la función ejecutar
 

@@ -1,8 +1,13 @@
 #include <stdio.h>
+#include <signal.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <errno.h>
+#include <error.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "builtins.h"
 #include "fun_help.h"
 #include "fun_exit.h"
@@ -13,6 +18,7 @@
 #include "fun_unsetenv.h"
 #include "fun_gid.h"
 #include "fun_status.h"
+
 
 extern struct builtin_struct builtin_arr[];
 extern struct builtin_struct *builtin_lookup(char *cmd);
@@ -53,14 +59,43 @@ int ejecutar(int argc, char **argv) {
     }
     // Agrega un manejo para el caso en que el comando no se encuentra
     else {
-        printf("Comando no encontrado: %s\n", argv[0]);
-        return 1;
+        externo(argc,argv);
     }
 }
+void sigint_handler(int signum) {                    // the handler for SIGINT
+    fprintf(stderr, "Interrupt! (signal number %d)\n", signum);
+}
 
+int externo (int argc, char **argv){
 
+    struct sigaction oldact, newact;
 
+    sigaction(SIGINT, NULL, &newact);           // the  previous action for SIGINT is saved in oldact
+    newact.sa_handler = sigint_handler;
+    sigaction(SIGINT, &newact, NULL);           // set SIGINT handler for loop
 
+    pid_t pid = fork();
 
+    sigaction(SIGINT, NULL, &oldact);   // the  previous action for SIGINT is saved in oldact
+    newact = oldact;
 
+    if (pid == -1) {
+        perror("fork");
+        return 1;
+    }
+    if(pid == 0){
+        newact.sa_handler = SIG_IGN;
+        sigaction(SIGINT, &newact, NULL);   // reset SIGINT default for child
+        execvp(argv[0],argv);
+        printf("El comando terminó anormalmente.\n");
+        fflush(stdout);
+        exit(1);
+    }else{
+        newact.sa_handler = SIG_IGN;
+        sigaction(SIGINT, &newact, NULL);   // ignore SIGINT while waiting
+        wait(NULL);
 
+        sigaction(SIGINT, &oldact, NULL);   // restore SIGINT when child finishes
+    }
+    return 0;
+}
