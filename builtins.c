@@ -18,7 +18,9 @@
 #include "fun_unsetenv.h"
 #include "fun_gid.h"
 #include "fun_status.h"
-
+#include "fun_cd.h"
+#include "fun_dir.h"
+#include "fun_history.h"
 
 extern struct builtin_struct builtin_arr[];
 extern struct builtin_struct *builtin_lookup(char *cmd);
@@ -31,13 +33,15 @@ struct builtin_struct builtin_arr[] = {
     {"getenv", execute_getenv, "Muestra el valor de la(s) variable(s) de entorno especificada(s). Los parámetros son las variables de entorno para las cuales se quiere saber el valor. \n"},
     {"setenv", execute_setenv, "Define una nueva variable de entorno o cambia el valor de una variable de entorno existente. \n"},
     {"unsetenv", execute_unsetenv, "Elimina variables de entorno. \n"},
-    //{"cd", execute_cd, "Cambia el directorio actual. Admite un parámetro. Además, setea la variable de entorno PWD con el pathname absoluto del directorio actual. El valor del parámetro puede ser: 'cd xxx' (cambia al directorio xxx), 'cd -' (cambia al directorio anterior), 'cd' (cambia al directorio especificado en la variable de entorno HOME). \n"},
+    {"cd", execute_cd, "Cambia el directorio actual. Admite un parámetro. Además, setea la variable de entorno PWD con el pathname absoluto del directorio actual. El valor del parámetro puede ser: 'cd xxx' (cambia al directorio xxx), 'cd -' (cambia al directorio anterior), 'cd' (cambia al directorio especificado en la variable de entorno HOME). \n"},
     {"status", execute_status, "Muestra el estado de retorno del último comando ejecutado. \n"},
     {"help", execute_help, "Muestra una ayuda más extensa para el comando especificado. Sin argumentos, muestra un texto de ayuda indicando qué comandos internos existen. \n"},
-    //{"dir", execute_dir, "Simula una ejecución simplificada del comando ls -l. Sin argumentos, muestra la lista de archivos del directorio actual. Con un único argumento, muestra la lista de archivos en el directorio especificado o que contengan el texto especificado en su nombre. \n"},
-    //{"history", execute_history, "Muestra los N comandos anteriores (por defecto 10) que deben almacenarse para ejecuciones posteriores del shell, en el archivo $HOME/.minish_history. \n"},
+    {"dir", execute_dir, "Simula una ejecución simplificada del comando ls -l. Sin argumentos, muestra la lista de archivos del directorio actual. Con un único argumento, muestra la lista de archivos en el directorio especificado o que contengan el texto especificado en su nombre. \n"},
+    {"history", execute_history, "Muestra los N comandos anteriores (por defecto 10) que deben almacenarse para ejecuciones posteriores del shell, en el archivo $HOME/.minish_history. \n"},
+    {"cd", execute_cd, "Cambia el directorio actual. Admite un parámetro. Además, setea la variable de entorno PWD con el pathname absoluto del directorio actual. El valor del parámetro puede ser: 'cd xxx' (cambia al directorio xxx), 'cd -' (cambia al directorio anterior), 'cd' (cambia al directorio especificado en la variable de entorno HOME). \n"},
     {NULL, NULL, NULL} // Marca de final de array
 };
+
 
 struct builtin_struct *builtin_lookup(char *cmd) {//buscar si existe el comando 
     struct builtin_struct *comando = builtin_arr;
@@ -53,14 +57,27 @@ struct builtin_struct *builtin_lookup(char *cmd) {//buscar si existe el comando
 int ejecutar(int argc, char **argv) {
     struct builtin_struct *result = builtin_lookup(argv[0]);
     int status = 0;
+
+    if (argc == 1) {
+        agregar_historial(argv[0]);
+        
+    } else {
+        size_t length = strlen(argv[0]) + strlen(argv[1]) + 2;
+        char *palabras = (char *)malloc(length * sizeof(char));
+        strcpy(palabras, argv[0]);
+        strcat(palabras, " ");
+        strcat(palabras, argv[1]);
+        agregar_historial(palabras);
+        free(palabras);
+    }
+
     if (result != NULL) {
         status = result->func(argc, argv);
-        return status;  // Devuelve el estado de retorno de la función ejecutada
+    } else {
+        status = externo(argc, argv);
     }
-    // Agrega un manejo para el caso en que el comando no se encuentra
-    else {
-        externo(argc,argv);
-    }
+
+    return status;
 }
 void sigint_handler(int signum) {                    // the handler for SIGINT
     fprintf(stderr, "Interrupt! (signal number %d)\n", signum);

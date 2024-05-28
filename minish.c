@@ -7,6 +7,7 @@
 #include <errno.h>
 #include "linea2argv.h"
 #include "builtins.h"
+#include "fun_history.h"
 
 #define MAX_INPUT_LENGTH 1024 //valores arbitarios para ambos, buscamos valores estandres que se adecuen con el proyecto
 #define MAX_ARGC 100
@@ -22,13 +23,9 @@ int main() {
     char input[MAX_INPUT_LENGTH];
     char *argv[MAX_ARGC];
     int argc;
+    cargarComandos();
+    liberarLista();
 
-    // Configurar el manejador de señal para SIGINT
-    //struct sigaction sa;
-    //sa.sa_handler = manejar_interrupcion; // Establecer la función de manejo de señales
-    //sigemptyset(&sa.sa_mask); // Limpiar el conjunto de señales bloqueadas
-    //sa.sa_flags = SA_RESTART; // Establecer la bandera SA_RESTART para reiniciar llamadas interrumpidas
-    //sigaction(SIGINT, &sa, NULL); // Registrar el manejador de señal
 
     // Bucle infinito para mantener el programa en ejecución continuamente
     while (1) {
@@ -76,6 +73,9 @@ int main() {
             free(argv[i]);
         }
     }
+
+    guardarComandos();
+    liberarLista();
 
     return ultimo_estado;
 }
