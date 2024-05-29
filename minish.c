@@ -25,7 +25,7 @@ int main() {
     int argc;
     cargarComandos();
     liberarLista();
-
+    
 
     // Bucle infinito para mantener el programa en ejecución continuamente
     while (1) {

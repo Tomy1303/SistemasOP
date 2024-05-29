@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "wrappers.h"
 
 typedef struct nodo_historial {
     char comando[256];
@@ -41,15 +42,17 @@ int execute_history(int argc, char **argv) {
 }
 
 void guardarComandos() {
-    FILE *archivo = fopen("minish_history.txt", "w");
+    FILE *archivo = fopen_or_exit("minish_history.txt", "w");
     if (archivo == NULL) {
         perror("fopen");
         exit(1);
     }
+    int i = 0;
     nodo_historial *actual = head;
-    while (actual != NULL) {
-        fprintf(archivo, "%s\n", actual->comando);
+    while (actual != NULL || i!=10) {
+        fwrite_or_exit(archivo, "%s\n", 2, actual->comando);
         actual = actual->siguiente;
+        i++;
     }
     fclose(archivo);
 }
@@ -64,15 +67,13 @@ void liberarLista() {
 }
 
 void cargarComandos() {
-    FILE *archivo = fopen("minish_history.txt", "r");
-    if (archivo == NULL) {
-        return; // No mostrar error si el archivo no existe
-    }
-
+    FILE *archivo = fopen_or_exit("minish_history.txt", "r");
+    int i;
     char linea[256];
-    while (fgets(linea, sizeof(linea), archivo) != NULL) {
+    while (fread_or_exit(linea, sizeof(linea), i, archivo) != NULL || i>9) {
         linea[strcspn(linea, "\n")] = '\0';
         agregar_historial(linea);
+        i ++;
     }
 
     fclose(archivo);
