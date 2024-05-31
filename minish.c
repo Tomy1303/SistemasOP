@@ -23,8 +23,7 @@ int main() {
     char input[MAX_INPUT_LENGTH];
     char *argv[MAX_ARGC];
     int argc;
-    cargarComandos();
-    liberarLista();
+    cargar_historial();
     
 
     // Bucle infinito para mantener el programa en ejecución continuamente
@@ -73,9 +72,5 @@ int main() {
             free(argv[i]);
         }
     }
-
-    guardarComandos();
-    liberarLista();
-
     return ultimo_estado;
 }

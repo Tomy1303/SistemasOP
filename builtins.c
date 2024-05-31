@@ -9,18 +9,18 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "builtins.h"
-#include "fun_help.h"
-#include "fun_exit.h"
-#include "fun_pid.h"
-#include "fun_uid.h"
-#include "fun_getenv.h"
-#include "fun_setenv.h"
-#include "fun_unsetenv.h"
-#include "fun_gid.h"
-#include "fun_status.h"
-#include "fun_cd.h"
-#include "fun_dir.h"
-#include "fun_history.h"
+#include "builtin_help.h"
+#include "builtin_exit.h"
+#include "builtin_pid.h"
+#include "builtin_uid.h"
+#include "builtin_getenv.h"
+#include "builtin_setenv.h"
+#include "builtin_unsetenv.h"
+#include "builtin_gid.h"
+#include "builtin_status.h"
+#include "builtin_cd.h"
+#include "builtin_dir.h"
+#include "builtin_history.h"
 
 extern struct builtin_struct builtin_arr[];
 extern struct builtin_struct *builtin_lookup(char *cmd);
@@ -60,6 +60,7 @@ int ejecutar(int argc, char **argv) {
 
     if (argc == 1) {
         agregar_historial(argv[0]);
+        guardar_historial(argv[0]);
         
     } else {
         size_t length = strlen(argv[0]) + strlen(argv[1]) + 2;
@@ -68,6 +69,7 @@ int ejecutar(int argc, char **argv) {
         strcat(palabras, " ");
         strcat(palabras, argv[1]);
         agregar_historial(palabras);
+        guardar_historial(palabras);
         free(palabras);
     }
 

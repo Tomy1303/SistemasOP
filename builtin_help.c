@@ -1,6 +1,6 @@
 #include "builtins.h"
 #include <stdio.h>  
-#include "fun_help.h"
+#include "builtin_help.h"
 
 int execute_help(int argc, char **argv){
     if(argc>1){

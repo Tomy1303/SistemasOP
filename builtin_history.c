@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "wrappers.h"
 
 typedef struct nodo_historial {
@@ -41,40 +42,26 @@ int execute_history(int argc, char **argv) {
     return 0;
 }
 
-void guardarComandos() {
-    FILE *archivo = fopen_or_exit("minish_history.txt", "w");
-    if (archivo == NULL) {
-        perror("fopen");
-        exit(1);
+
+void cargar_historial() {
+    FILE *file = fopen_or_exit("minish_history.txt", "r");
+    if (!file) return;
+
+    char *line = NULL;
+
+    size_t len=0;
+
+    while (getline(&line, &len, file) != -1) {
+        line[strcspn(line, "\n")] = '\0'; 
+        agregar_historial(line);
     }
-    int i = 0;
-    nodo_historial *actual = head;
-    while (actual != NULL || i!=10) {
-        fwrite_or_exit(archivo, "%s\n", 2, actual->comando);
-        actual = actual->siguiente;
-        i++;
-    }
-    fclose(archivo);
+    fclose(file);
 }
 
-void liberarLista() {
-    nodo_historial *actual = head;
-    while (actual != NULL) {
-        nodo_historial *temp = actual;
-        actual = actual->siguiente;
-        free(temp);
-    }
+void guardar_historial(char *comand) {
+    FILE *file = fopen_or_exit("minish_history.txt", "a");
+    if (!file) return;
+    fprintf(file, "%s\n", comand);
+    fclose(file);
 }
 
-void cargarComandos() {
-    FILE *archivo = fopen_or_exit("minish_history.txt", "r");
-    int i;
-    char linea[256];
-    while (fread_or_exit(linea, sizeof(linea), i, archivo) != NULL || i>9) {
-        linea[strcspn(linea, "\n")] = '\0';
-        agregar_historial(linea);
-        i ++;
-    }
-
-    fclose(archivo);
-}
