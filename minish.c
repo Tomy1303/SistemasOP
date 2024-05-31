@@ -7,7 +7,7 @@
 #include <errno.h>
 #include "linea2argv.h"
 #include "builtins.h"
-#include "fun_history.h"
+#include "builtin_history.h"
 
 #define MAX_INPUT_LENGTH 1024 //valores arbitarios para ambos, buscamos valores estandres que se adecuen con el proyecto
 #define MAX_ARGC 100

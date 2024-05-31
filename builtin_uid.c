@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <pwd.h>
-#include "fun_uid.h"
+#include "builtin_uid.h"
 
 int execute_uid(int argc, char **argv){
     __uid_t uid = getuid();
