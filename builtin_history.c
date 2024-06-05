@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "wrappers.h"
+#include "builtin_history.h"
 
 typedef struct nodo_historial {
     char comando[256];

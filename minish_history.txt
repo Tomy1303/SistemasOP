@@ -19,3 +19,13 @@ exit
 history
 f
 history
+historial
+historial
+exit
+cd
+historial
+exit
+history
+exit
+history
+exit
