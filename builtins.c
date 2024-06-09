@@ -43,25 +43,26 @@ struct builtin_struct builtin_arr[] = {
 };
 
 
-struct builtin_struct *builtin_lookup(char *cmd) {//buscar si existe el comando 
+// Función para buscar un comando interno en el array builtin_arr
+struct builtin_struct *builtin_lookup(char *cmd) {
     struct builtin_struct *comando = builtin_arr;
     while (comando->cmd != NULL) {
-        if (strcmp(comando->cmd, cmd) == 0) {//comparacion de comandos
+        if (strcmp(comando->cmd, cmd) == 0) { // Comparar el comando
             return comando;
         }
         comando++;
     }
-    return NULL; // comando no encontrado
-};
+    return NULL; // Comando no encontrado
+}
 
+// Función para ejecutar un comando, ya sea interno o externo
 int ejecutar(int argc, char **argv) {
     struct builtin_struct *result = builtin_lookup(argv[0]);
     int status = 0;
 
+    // Guardar el comando en el historial
     if (argc == 1) {
         agregar_historial(argv[0]);
-        guardar_historial(argv[0]);
-        
     } else {
         size_t length = strlen(argv[0]) + strlen(argv[1]) + 2;
         char *palabras = (char *)malloc(length * sizeof(char));
@@ -73,6 +74,7 @@ int ejecutar(int argc, char **argv) {
         free(palabras);
     }
 
+    // Ejecutar el comando si es interno, de lo contrario ejecutar un comando externo
     if (result != NULL) {
         status = result->func(argc, argv);
     } else {
@@ -81,40 +83,42 @@ int ejecutar(int argc, char **argv) {
 
     return status;
 }
-void sigint_handler(int signum) {                    // the handler for SIGINT
+
+// Manejador de señales para SIGINT
+void sigint_handler(int signum) {
     fprintf(stderr, "Interrupt! (signal number %d)\n", signum);
 }
 
-int externo (int argc, char **argv){
-
+// Función para ejecutar comandos externos
+int externo(int argc, char **argv) {
     struct sigaction oldact, newact;
 
-    sigaction(SIGINT, NULL, &newact);           // the  previous action for SIGINT is saved in oldact
+    sigaction(SIGINT, NULL, &newact); // Guardar la acción previa para SIGINT en oldact
     newact.sa_handler = sigint_handler;
-    sigaction(SIGINT, &newact, NULL);           // set SIGINT handler for loop
+    sigaction(SIGINT, &newact, NULL); // Configurar el manejador de SIGINT
 
-    pid_t pid = fork();
+    pid_t pid = fork(); // Crear un nuevo proceso
 
-    sigaction(SIGINT, NULL, &oldact);   // the  previous action for SIGINT is saved in oldact
+    sigaction(SIGINT, NULL, &oldact); // Restaurar la acción previa para SIGINT
     newact = oldact;
 
     if (pid == -1) {
         perror("fork");
         return 1;
     }
-    if(pid == 0){
+    if (pid == 0) { // Proceso hijo
         newact.sa_handler = SIG_IGN;
-        sigaction(SIGINT, &newact, NULL);   // reset SIGINT default for child
-        execvp(argv[0],argv);
+        sigaction(SIGINT, &newact, NULL); // Ignorar SIGINT en el proceso hijo
+        execvp(argv[0], argv);
         printf("El comando terminó anormalmente.\n");
         fflush(stdout);
         exit(1);
-    }else{
+    } else { // Proceso padre
         newact.sa_handler = SIG_IGN;
-        sigaction(SIGINT, &newact, NULL);   // ignore SIGINT while waiting
+        sigaction(SIGINT, &newact, NULL); // Ignorar SIGINT mientras espera
         wait(NULL);
 
-        sigaction(SIGINT, &oldact, NULL);   // restore SIGINT when child finishes
+        sigaction(SIGINT, &oldact, NULL); // Restaurar SIGINT cuando el hijo termina
     }
     return 0;
 }

@@ -45,6 +45,7 @@ int main() {
         // Leer una línea de entrada
         if (fgets(input, sizeof(input), stdin) == NULL) {
             if (feof(stdin)) {
+                printf("Terminando el progrma\n");
                 break; // Salir del bucle si se encuentra EOF
             } else {
                 perror("fgets");

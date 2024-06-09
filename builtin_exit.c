@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "builtin_exit.h"
 #include "builtin_history.h"
 
 int execute_exit(int argc, char **argv){
+    guardar_historial();
 // Verifica si se ha pasado exactamente un argumento (es decir, solo el comando 'exit' sin parámetros adicionales).
     if(argc == 1){
         exit(0); // Termina el programa con un código de salida 0, indicando éxito.

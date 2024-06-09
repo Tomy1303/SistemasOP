@@ -16,8 +16,12 @@ $(OUT): $(OBJFILES)
 %.o: %.c
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
+# Create minish_history.txt if it doesn't exist
+.PHONY: minish_history.txt
+minish_history.txt:
+	@test -f $@ || touch $@
+
 # Clean rule
 .PHONY: clean
 clean:
 	rm -f $(OBJFILES) $(OUT) $(DEPS)
-
