@@ -1,2 +1,99 @@
 history
 exit
+history
+exit
+cd fei
+history
+exit
+cd fei
+exit
+history
+exit
+history
+exit
+cd fei
+history
+exit
+cd fei
+exit
+cd -
+exit
+history
+exit
+cd fei
+history
+exit
+cd fei
+exit
+cd -
+cd ..
+history
+exit
+cd fei
+history
+exit
+cd fei
+exit
+cd -
+cd ..
+dir gri
+cd fei
+history
+exit
+cd fei
+exit
+cd -
+cd ..
+dir gri
+efe
+cd fmrof
+history
+exit
+cd fei
+exit
+cd -
+cd ..
+dir gri
+efe
+cd fmrof
+exit
+exit
+cd fei
+exit
+cd -
+cd ..
+dir gri
+efe
+cd fmrof
+exit
+cd -
+cd fei
+exit
+cd -
+cd ..
+dir gri
+efe
+cd fmrof
+exit
+cd -
+c dfjeif
+exit
+cd -
+cd ..
+dir gri
+efe
+cd fmrof
+exit
+cd -
+c dfjeif
+cd jwidjw
+cd -
+cd ..
+dir gri
+efe
+cd fmrof
+exit
+cd -
+c dfjeif
+cd jwidjw
+exit
